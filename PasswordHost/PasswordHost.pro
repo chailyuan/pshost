@@ -3,6 +3,7 @@
 # Project created by QtCreator 2017-12-07T18:52:35
 #
 #-------------------------------------------------
+include($$PWD/../Base.pri)
 
 QT += core gui network concurrent sql
 
@@ -16,10 +17,15 @@ CONFIG += c++11
 include( $$PWD/../JQLibrary/JQLibrary.pri )
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    thread.cpp
+        mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    thread.h
+HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+LIBS += -L$$DESTDIR \
+        -lDbManager
+
+INCLUDEPATH += $$PWD/../DbManager
+
+DEPENDPATH += $$PWD/../DbManager
