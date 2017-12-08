@@ -51,7 +51,7 @@ QSqlDatabase DbManager::getDb(const QString &connectionName,
     }
     QString sDbName = dbName;
     if(driver.compare("QSQLITE",Qt::CaseInsensitive)==0){
-        sDbName =QString("%1/../db/%2.db3").arg(QCoreApplication::applicationDirPath()).arg(dbName);
+        sDbName =QString("%1/../db/%2.db").arg(QCoreApplication::applicationDirPath()).arg(dbName);
     }
     db.setHostName(serverIp);
     db.setPort(port);
