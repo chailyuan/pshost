@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QHostInfo>
 #include "DbManager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,6 +11,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QString localHost = QHostInfo::localHostName();
+    QHostInfo info = QHostInfo::fromName(localHost);
+    info.addresses();
+
+    QString ipAddr="";
+
+    //如果存在多条ip地址ipv4和ipv6：
+   foreach(QHostAddress address,info.addresses())
+   {
+       if(address.protocol()==QAbstractSocket::IPv4Protocol){//只取ipv4协议的地址
+           qDebug()<<address.toString();
+           ipAddr += address.toString()+"\n";
+       }
+   }
+   ui->textEdit->setText(ipAddr);
 }
 
 MainWindow::~MainWindow()
@@ -84,4 +101,6 @@ void MainWindow::on_pushButton_clicked()
     } );
 
     pserver->listen( QHostAddress::Any, 8000 );
+
+    ui->pushButton->setEnabled(false);
 }
