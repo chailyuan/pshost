@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "JQHttpServer.h"
+#include <QSqlTableModel>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void initSqlModel();
+    void refreshSqlData();
+public:
+    //数据库关联表格
+    QSqlTableModel mShowDataModel;
 
 public:
     JQHttpServer::TcpServerManage* pserver;

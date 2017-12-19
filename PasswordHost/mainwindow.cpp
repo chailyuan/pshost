@@ -8,7 +8,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    mShowDataModel(0, DbManager::getInstance()->getConfigDb(NULL))
 {
     ui->setupUi(this);
 
@@ -21,17 +22,47 @@ MainWindow::MainWindow(QWidget *parent) :
     //如果存在多条ip地址ipv4和ipv6：
    foreach(QHostAddress address,info.addresses())
    {
+       if(ipAddr!="")
+           ipAddr+="\n";
        if(address.protocol()==QAbstractSocket::IPv4Protocol){//只取ipv4协议的地址
            qDebug()<<address.toString();
-           ipAddr += address.toString()+"\n";
+           ipAddr += address.toString();
        }
    }
    ui->textEdit->setText(ipAddr);
+   initSqlModel();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::initSqlModel(){
+
+    mShowDataModel.setTable("password");
+    mShowDataModel.setEditStrategy(QSqlTableModel::OnFieldChange);
+
+    ui->outputTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    //设置过滤项,order是sql语句中where后面的部分
+//    if(order!="")
+//        mShowDataModel.setFilter(order);
+    mShowDataModel.setSort(0,Qt::AscendingOrder);
+    mShowDataModel.select();
+    refreshSqlData();
+}
+void MainWindow::refreshSqlData(){
+    ui->outputTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->outputTableView->horizontalHeader()->setMinimumSectionSize(100);
+    ui->outputTableView->setAlternatingRowColors(true);
+    ui->outputTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->outputTableView->setModel(&mShowDataModel);
+
+    mShowDataModel.setHeaderData(0,Qt::Horizontal,QObject::tr("用户名"));
+    mShowDataModel.setHeaderData(1,Qt::Horizontal,QObject::tr("平台"));
+    mShowDataModel.setHeaderData(2,Qt::Horizontal,QObject::tr("密码"));
+
 }
 
 void MainWindow::on_pushButton_clicked()
